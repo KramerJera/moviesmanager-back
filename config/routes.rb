@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  resources :profiles
+  resources :profiles do 
+      resources :movies 
+  end
+
   
   root to: "home#index"
 

@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_27_151156) do
+ActiveRecord::Schema.define(version: 2022_01_28_014622) do
+
+  create_table "movies", force: :cascade do |t|
+    t.string "title"
+    t.string "poster"
+    t.boolean "watchlist"
+    t.boolean "watched"
+    t.integer "profile_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["profile_id"], name: "index_movies_on_profile_id"
+  end
 
   create_table "profiles", force: :cascade do |t|
     t.string "name"
@@ -29,5 +40,6 @@ ActiveRecord::Schema.define(version: 2022_01_27_151156) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "movies", "profiles"
   add_foreign_key "profiles", "users"
 end
