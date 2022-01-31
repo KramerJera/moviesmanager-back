@@ -9,7 +9,7 @@ class MoviesController < ApplicationController
 
   # GET /movies
   def index
-    @movies = @profile.movies.all
+    @movies = @profile.movies
 
     render json: @movies
   end
@@ -21,10 +21,10 @@ class MoviesController < ApplicationController
 
   # POST /movies
   def create
-    @movie = Movie.new(movie_params)
+    @movie = @profile.movies.new(movie_params)
 
     if @movie.save
-      render json: @movie, status: :created, location: @movie
+      render json: @movie, status: :created
     else
       render json: @movie.errors, status: :unprocessable_entity
     end
@@ -71,7 +71,7 @@ class MoviesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_movie
-      @movie = Movie.find(params[:id])
+      @movie = @profile.movies.find(params[:id])
     end
 
     def fetch_profile
