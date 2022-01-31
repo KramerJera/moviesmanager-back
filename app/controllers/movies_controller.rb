@@ -3,6 +3,10 @@ class MoviesController < ApplicationController
   before_action :fetch_profile
   before_action :set_movie, only: %i[ show update destroy ]
 
+  require_relative '../../.tmdb_api_key.rb'
+  require 'faraday/net_http'
+  Faraday.default_adapter = :net_http
+
   # GET /movies
   def index
     @movies = @profile.movies.all
@@ -40,6 +44,30 @@ class MoviesController < ApplicationController
     @movie.destroy
   end
 
+  def search
+    movie = params[:search_term]
+
+    response = Faraday.get('https://api.themoviedb.org/3/search/movie', { 
+                          api_key: $api_key, 
+                          language: 'pt-BR', 
+                          include_adult: false, 
+                          query: movie })
+
+    json = JSON.parse(response.body)
+    result = json['results']
+
+    filtered = Array.new
+    for movie in result do
+      if movie['overview'] != ""
+        poster_path = "https://image.tmdb.org/t/p/w500" + (movie['poster_path']).to_s
+        movie['poster_path'] = poster_path
+        filtered.push(movie)
+      end
+    end
+
+    render json: filtered
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_movie
@@ -52,6 +80,6 @@ class MoviesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def movie_params
-      params.require(:movie).permit(:title, :poster, :watchlist, :watched, :profile_id)
+      params.require(:movie).permit(:title, :poster, :description, :watchlist, :watched, :profile_id)
     end
 end

@@ -3,6 +3,7 @@ class CreateMovies < ActiveRecord::Migration[7.0]
     create_table :movies do |t|
       t.string :title
       t.string :poster
+      t.string :description
       t.boolean :watchlist
       t.boolean :watched
       t.references :profile, null: false, foreign_key: true

@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 2022_01_28_014622) do
   create_table "movies", force: :cascade do |t|
     t.string "title"
     t.string "poster"
+    t.string "description"
     t.boolean "watchlist"
     t.boolean "watched"
     t.integer "profile_id", null: false

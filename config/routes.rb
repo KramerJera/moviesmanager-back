@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   resources :profiles do 
-      resources :movies 
+      resources :movies do
+        collection do
+          get '/search/:search_term', to: 'movies#search'
+        end        
+      end
   end
 
   
