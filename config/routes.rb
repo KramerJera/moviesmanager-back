@@ -3,6 +3,8 @@ Rails.application.routes.draw do
       resources :movies do
         collection do
           get '/search/:search_term', to: 'movies#search'
+          get '/watchlist', to: 'movies#watchlist'
+          get '/watched', to: 'movies#watched'
         end        
       end
   end

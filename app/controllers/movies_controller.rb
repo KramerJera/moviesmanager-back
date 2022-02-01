@@ -61,11 +61,29 @@ class MoviesController < ApplicationController
       if movie['overview'] != ""
         poster_path = "https://image.tmdb.org/t/p/w500" + (movie['poster_path']).to_s
         movie['poster_path'] = poster_path
-        filtered.push(movie)
+
+        correct = {
+          "title" => movie['title'], 
+          "poster" => movie['poster_path'],
+          "description" => movie['overview']}
+
+        filtered.push(correct)
       end
     end
 
     render json: filtered
+  end
+
+  def watchlist
+    @movies = @profile.movies.where(watchlist: true)
+
+    render json: @movies
+  end
+
+  def watched
+    @movies = @profile.movies.where(watched: true)
+
+    render json: @movies
   end
 
   private
