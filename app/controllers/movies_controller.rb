@@ -3,10 +3,6 @@ class MoviesController < ApplicationController
   before_action :fetch_profile
   before_action :set_movie, only: %i[ show update destroy ]
 
-  require_relative '../../.tmdb_api_key.rb'
-  require 'faraday/net_http'
-  Faraday.default_adapter = :net_http
-
   # GET /movies
   def index
     @movies = @profile.movies
@@ -46,31 +42,7 @@ class MoviesController < ApplicationController
 
   def search
     movie = params[:search_term]
-
-    response = Faraday.get('https://api.themoviedb.org/3/search/movie', { 
-                          api_key: $api_key, 
-                          language: 'pt-BR', 
-                          include_adult: false, 
-                          query: movie })
-
-    json = JSON.parse(response.body)
-    result = json['results']
-
-    filtered = Array.new
-    for movie in result do
-      if movie['overview'] != ""
-        poster_path = "https://image.tmdb.org/t/p/w500" + (movie['poster_path']).to_s
-        movie['poster_path'] = poster_path
-
-        correct = {
-          "title" => movie['title'], 
-          "poster" => movie['poster_path'],
-          "description" => movie['overview']}
-
-        filtered.push(correct)
-      end
-    end
-
+    filtered = RemoteMovie.search(movie)
     render json: filtered
   end
 

@@ -16,18 +16,10 @@ class ProfilesController < ApplicationController
 
   # POST /profiles
   def create
-    userProfiles = current_user.profiles
-
-    if userProfiles.length() < 4
-      @profile = current_user.profiles.new(profile_params)
-
-      if @profile.save
-        render json: @profile, status: :created, location: @profile
-      else
-        render json: @profile.errors, status: :unprocessable_entity
-      end
+    if  current_user.profiles.save(profile_params)
+      render json: @profile, status: :created, location: @profile
     else
-      render json: { error: "Máximo de 4 perfis por usuário" }
+      render json: @profile.errors, status: :unprocessable_entity
     end
   end
 
